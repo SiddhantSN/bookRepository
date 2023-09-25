@@ -32,12 +32,6 @@ public class BookController {
 		return ResponseEntity.ok(book); 
 	}
 	
-//	@GetMapping("/books/{year}")
-//	public List<Book> getAllBooksByIsbn(@PathVariable("year") int year){
-//		return this.bookService.getAllBooksByYear(year);
-//	}
-	
-	
 	@PostMapping("/books")
 	public ResponseEntity<Book> addNewBook(@RequestBody Book book){
 		Book newBook = this.bookService.saveBook(book);
