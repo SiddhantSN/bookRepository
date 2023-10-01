@@ -34,6 +34,11 @@ public class BookService {
 		return savedBook;
 	}
 	
+//	public List<Book> getByAuthor(String author) {
+//		List<Book> bookList = this.bookRepository.findByBookAuthor(author);
+//		return bookList;
+//	}
+	
 	public void updateByIsbn(Book book, String isbn) {
 		book.setIsbn(isbn);
 		this.bookRepository.save(book);
