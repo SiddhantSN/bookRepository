@@ -24,20 +24,20 @@ public class BookService {
 		Optional<Book> bookFound  = this.bookRepository.findById(isbn);
 		return bookFound.get();
 	}
-//	
-//	public List<Book> getAllBooksByYear(int year){
-//		return this.bookRepository.getBooksByYearOfPublication(year);
-//	}
+	
+	public List<Book> getAllBooksByYear(int year){
+		return this.bookRepository.findByYearOfPublication(year);
+	}
 	
 	public Book saveBook(Book book) {
 		Book savedBook = this.bookRepository.save(book);
 		return savedBook;
 	}
 	
-//	public List<Book> getByAuthor(String author) {
-//		List<Book> bookList = this.bookRepository.findByBookAuthor(author);
-//		return bookList;
-//	}
+	public List<Book> getByAuthor(String author) {
+		List<Book> bookList = this.bookRepository.findByBookAuthor(author);
+		return bookList;
+	}
 	
 	public void updateByIsbn(Book book, String isbn) {
 		book.setIsbn(isbn);

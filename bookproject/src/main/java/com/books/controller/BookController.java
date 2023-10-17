@@ -33,10 +33,10 @@ public class BookController {
 		return ResponseEntity.ok(book); 
 	}
 	
-//	@GetMapping("/books/{year}")
-//	public List<Book> getAllBooksByIsbn(@PathVariable("year") int year){
-//		return this.bookService.getAllBooksByYear(year);
-//	}
+	@GetMapping("/books/{year}")
+	public ResponseEntity<List<Book>> getAllBooksByYear(@PathVariable("year") int year){
+		return ResponseEntity.ok(this.bookService.getAllBooksByYear(year));
+	}
 	
 	
 	@PostMapping("/books")
@@ -45,11 +45,11 @@ public class BookController {
 		return ResponseEntity.ok(newBook);
 	}
 	
-//	@GetMapping("/books/{author}")
-//	public List<Book> getByAuthor(@PathVariable String author){
-//		List<Book> book = this.bookService.getByAuthor(author);
-//		return book;
-//	}
+	@GetMapping("/books/{author}")
+	public List<Book> getByAuthor(@PathVariable String author){
+		List<Book> book = this.bookService.getByAuthor(author);
+		return book;
+	}
 	
 	@PutMapping("/books")
 	public ResponseEntity<Book> updateBook(@RequestBody Book book){
