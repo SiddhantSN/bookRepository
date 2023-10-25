@@ -29,7 +29,7 @@ public class BookController {
 	@GetMapping("/books/{isbn}")
 	public ResponseEntity<Book> getBookByIsbn(@PathVariable("isbn") String isbn) {
 		Book book = this.bookService.getBookByIsbn(isbn);
-		// handle if isbn not found, return not found status 
+		// handle if isbn not found, return not found status
 		return ResponseEntity.ok(book); 
 	}
 	
