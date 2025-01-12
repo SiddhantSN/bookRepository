@@ -34,8 +34,8 @@ public class BookController {
 	}
 	
 	@GetMapping("/books/{year}")
-	public ResponseEntity<List<Book>> getAllBooksByYear(@PathVariable("year") int year){
-		return ResponseEntity.ok(this.bookService.getAllBooksByYear(year));
+	public List<Book> getAllBooksByYear(@PathVariable("year") int year){
+		return this.bookService.getAllBooksByYear(year);
 	}
 	
 	

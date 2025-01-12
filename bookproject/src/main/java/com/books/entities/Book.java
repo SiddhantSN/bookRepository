@@ -11,6 +11,7 @@ public class Book {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	public long id;
 	
 	@Column(name = "isbn")
