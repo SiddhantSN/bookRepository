@@ -57,9 +57,9 @@ public class BookController {
 		return ResponseEntity.ok(book);
 	}
 	
-	@DeleteMapping("/books/{isbn}")
-	public void deleteBook(@PathVariable("isbn") String isbn) {
-		this.bookService.deleteByIsbn(isbn);
+	@DeleteMapping("/books/{id}")
+	public Book deleteBook(@PathVariable("id") String id) {
+		return this.bookService.deleteById(Long.parseLong(id));
 	}
 	
 }

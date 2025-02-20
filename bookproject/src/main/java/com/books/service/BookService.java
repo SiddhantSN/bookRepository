@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.books.dao.BookDAO;
 import com.books.dao.BookRepository;
 import com.books.entities.Book;
 
@@ -14,9 +15,11 @@ public class BookService {
 	
 	@Autowired
 	BookRepository bookRepository;
+	@Autowired
+	BookDAO bookDAO;
 	
 	public List<Book> getAllBooks(){
-		return this.bookRepository.findAll();
+		return this.bookDAO.getAll();
 	}
 	
 	public Book getBookByIsbn(String isbn) {
@@ -30,7 +33,7 @@ public class BookService {
 	}
 	
 	public Book saveBook(Book book) {
-		Book savedBook = this.bookRepository.save(book);
+		Book savedBook = this.bookDAO.save(book);
 		return savedBook;
 	}
 	
@@ -44,7 +47,7 @@ public class BookService {
 		this.bookRepository.save(book);
 	}
 
-	public void deleteByIsbn(String isbn) {
-		this.bookRepository.deleteById(isbn);
+	public Book deleteById(Long id) {
+		 return this.bookDAO.deleteById(id);
 	}
 }
