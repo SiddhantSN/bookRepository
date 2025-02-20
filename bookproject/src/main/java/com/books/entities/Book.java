@@ -1,7 +1,5 @@
 package com.books.entities;
 
-import org.hibernate.annotations.NamedQuery;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-@NamedQuery(name="getallbooks", query="select b from Book b")
+//@NamedQuery(name="getallbooks", query="select b from Book b")
 public class Book {
 	
 	@Id
