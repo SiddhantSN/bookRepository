@@ -4,18 +4,23 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.books.entities.Book;
 import com.books.service.BookService;
 
 @RestController
+//@RequestMapping("/books")
 public class BookController {
 	
 	@Autowired
@@ -26,14 +31,15 @@ public class BookController {
 		return this.bookService.getAllBooks();
 	}
 	
-	@GetMapping("/books/{isbn}")
-	public ResponseEntity<Book> getBookByIsbn(@PathVariable("isbn") String isbn) {
-		Book book = this.bookService.getBookByIsbn(isbn);
+	@GetMapping("/books/{id}")
+	public ResponseEntity<Book> getBookById(@PathVariable("id") String id) {
+		Book book = this.bookService.getBookById(Long.parseLong(id));
+		System.out.println(id);
 		// handle if isbn not found, return not found status
 		return ResponseEntity.ok(book); 
 	}
 	
-	@GetMapping("/books/{year}")
+	@GetMapping("/year/{year}")
 	public List<Book> getAllBooksByYear(@PathVariable("year") int year){
 		return this.bookService.getAllBooksByYear(year);
 	}
@@ -45,10 +51,12 @@ public class BookController {
 		return ResponseEntity.ok(newBook);
 	}
 	
-	@GetMapping("/books/{author}")
-	public List<Book> getByAuthor(@PathVariable String author){
-		List<Book> book = this.bookService.getByAuthor(author);
-		return book;
+	@GetMapping("/author/{author}")
+	public List<Book> getByAuthor(@PathVariable("author") String author){
+		System.out.println(author);
+		List<Book> books = this.bookService.getByAuthor(author);
+		System.out.println(author);
+		return books;
 	}
 	
 	@PutMapping("/books")
@@ -58,8 +66,8 @@ public class BookController {
 	}
 	
 	@DeleteMapping("/books/{id}")
-	public Book deleteBook(@PathVariable("id") String id) {
-		return this.bookService.deleteById(Long.parseLong(id));
+	public void deleteBook(@PathVariable("id") String id) {
+		this.bookService.deleteById(Long.parseLong(id));
 	}
 	
 }
