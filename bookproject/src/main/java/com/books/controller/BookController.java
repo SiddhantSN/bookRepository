@@ -51,7 +51,7 @@ public class BookController {
 		return ResponseEntity.ok(newBook);
 	}
 	
-	@GetMapping("/author/{author}")
+	@GetMapping("/books/author/{author}")
 	public List<Book> getByAuthor(@PathVariable("author") String author){
 		System.out.println(author);
 		List<Book> books = this.bookService.getByAuthor(author);
