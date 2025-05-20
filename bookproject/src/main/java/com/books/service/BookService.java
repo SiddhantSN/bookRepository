@@ -18,8 +18,7 @@ public class BookService {
 	BookRepository bookRepository;
 	
 	public List<Book> getAllBooks(){
-		return StreamSupport.stream(this.bookRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+		return bookRepository.findAll();
 	}
 	
 	public Book getBookById(Long id) {

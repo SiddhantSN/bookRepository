@@ -21,16 +21,18 @@ import com.books.entities.Book;
 import com.books.service.BookService;
 
 
-@RequestMapping("/books")
+
 @RestController
+@RequestMapping("/books")
 public class BookController {
 	
 	@Autowired
 	BookService bookService;
 	
 	@GetMapping
-	public List<Book> getAllBooks(){
-		return this.bookService.getAllBooks();
+	public ResponseEntity<List<Book>> getAllBooks(){
+		List<Book> allBooks = bookService.getAllBooks();
+		return ResponseEntity.ok(allBooks);
 	}
 	
 	@GetMapping("/id/{id}")
@@ -41,13 +43,7 @@ public class BookController {
 		return ResponseEntity.ok(book); 
 	}
 	
-//	@GetMapping("/year/{year}")
-//	public List<Book> getAllBooksByYear(@PathVariable("year") int year){
-//		return this.bookService.getAllBooksByYear(year);
-//	}
-	
-	
-	@PostMapping("")
+	@PostMapping
 	public ResponseEntity<Book> addNewBook(@RequestBody Book book){
 		Book newBook = this.bookService.saveBook(book);
 		return ResponseEntity.ok(newBook);
@@ -59,20 +55,15 @@ public class BookController {
 	    return ResponseEntity.ok(books);
 	}
 	
-	@PutMapping("/books")
+	@PutMapping
 	public ResponseEntity<Book> updateBook(@RequestBody Book book){
 		this.bookService.updateByIsbn(book, book.isbn);
 		return ResponseEntity.ok(book);
 	}
 	
 	@DeleteMapping("/{id}")
-	public void deleteBook(@PathVariable("id") String id) {
+	public void deleteBook(@PathVariable String id) {
 		this.bookService.deleteById(Long.parseLong(id));
 	}
-    @GetMapping("/test")
-    public String testEndpoint() {
-        System.out.println("Test endpoint hit!");
-        return "Controller is working!";
-    }
 	
 }
