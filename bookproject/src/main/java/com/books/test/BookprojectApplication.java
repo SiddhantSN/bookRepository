@@ -34,9 +34,9 @@ public class BookprojectApplication implements CommandLineRunner{
 		List<Book> books = bookRepository.findByAuthor("RZ");
 		List<Book> books2 = StreamSupport.stream(this.bookRepository.findAll().spliterator(), false)
 		 .collect(Collectors.toList());
-		 Book bookFound = this.bookRepository.findById(Long.valueOf(1)).get();
-		 System.out.println(bookFound.toString() + "///////////////////////");
-		for (Book book : books2) {
+		// Book bookFound = this.bookRepository.findById(Long.valueOf(1)).get();
+		 //System.out.println(bookFound.toString() + "///////////////////////");
+		for (Book book : books) {
 			System.out.println(book.toString());
 		}
 		

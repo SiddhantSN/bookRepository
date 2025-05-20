@@ -28,9 +28,9 @@ public class BookService {
 		return bookFound.get();
 	}
 	
-	public List<Book> getAllBooksByYear(int year){
-		return this.bookRepository.findByyearOfPublication(year);
-	}
+//	public List<Book> getAllBooksByYear(int year){
+//		return this.bookRepository.findByyearOfPublication(year);
+//	}
 	
 	public Book saveBook(Book book) {
 		Book savedBook = this.bookRepository.save(book);
