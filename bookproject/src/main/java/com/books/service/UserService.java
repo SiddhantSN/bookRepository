@@ -14,4 +14,6 @@ public interface UserService {
 	
 	User updateUser(User updatedUser);
 	
+	User AddBookToUser(Long bookId, String userId);
+	
 }

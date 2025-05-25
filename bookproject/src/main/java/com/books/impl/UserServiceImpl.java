@@ -7,13 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.books.dao.UserRepository;
+import com.books.entities.Book;
 import com.books.entities.User;
+import com.books.service.BookService;
 import com.books.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
+	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	BookService bookService;
 	
 	@Override
 	public User createUser(User user) {
@@ -42,6 +48,20 @@ public class UserServiceImpl implements UserService {
 		currentUser.setName(updatedUser.getName());
 		User savedUser = this.userRepository.save(currentUser);
 		return savedUser;
+	}
+
+	@Override
+	public User AddBookToUser(Long bookId, String userId) {
+		// book id 2
+		// user ID b6fa44e7-fe4a-4008-a38e-ceabae623fc9
+		Book book = this.bookService.getBookById(bookId);
+		User user = getUserById(userId);
+		List<Book> books = user.getBooks();
+		book.setUserId(userId);
+		books.add(this.bookService.updateBook(book));
+		user.setBooks(books);
+		// persist this change?
+		return updateUser(user);
 	}
 
 }
