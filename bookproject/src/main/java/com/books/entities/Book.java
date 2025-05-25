@@ -41,9 +41,6 @@ public class Book {
 
 	@Column(name = "publication")
 	public String publication;
-
-	@Column(name = "image_Url_Small")
-	public String imageUrlSmall;
 	
 	@Column(name="user_id")
 	public String userId;

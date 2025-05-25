@@ -41,6 +41,11 @@ public class UserController {
 		return ResponseEntity.ok(this.userService.getUserById(id));
 	}
 	
+	@PutMapping("/update")
+	public ResponseEntity<User> updateUser(@RequestBody User user){
+		return ResponseEntity.ok(this.userService.updateUser(user));
+	}
+	
 	@PutMapping
 	public ResponseEntity<User> addBookToUser(@RequestParam Long bookId, @RequestParam String userId){
 		// book id 2

@@ -16,7 +16,7 @@ public interface BookService {
 
 	List<Book> getByYear(int year);
 
-	void updateById(Long id);
+	Book updateBook(Book book);
 
 	void deleteById(Long id);
 
