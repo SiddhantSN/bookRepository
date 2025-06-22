@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.books.entities.User;
+import com.books.exception.UserNotFoundException;
 import com.books.service.BookService;
 import com.books.service.UserService;
 
@@ -36,17 +37,17 @@ public class UserController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<User> getUserById(@PathVariable String id){
+	public ResponseEntity<User> getUserById(@PathVariable String id) throws UserNotFoundException{
 		return ResponseEntity.ok(this.userService.getUserById(id));
 	}
 	
 	@PutMapping("/update")
-	public ResponseEntity<User> updateUser(@RequestBody User user){
+	public ResponseEntity<User> updateUser(@RequestBody User user) throws UserNotFoundException{
 		return ResponseEntity.ok(this.userService.updateUser(user));
 	}
 	
 	@PutMapping
-	public ResponseEntity<User> addBookToUser(@RequestParam Long bookId, @RequestParam String userId){
+	public ResponseEntity<User> addBookToUser(@RequestParam Long bookId, @RequestParam String userId) throws UserNotFoundException{
 		// book id 2
 		// user ID b6fa44e7-fe4a-4008-a38e-ceabae623fc9
 		
