@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService {
 		book.setUserId(userId);
 		books.add(this.bookService.updateBook(book));
 		user.setBooks(books);
-		// persist this change?
 		return updateUser(user);
 	}
 
