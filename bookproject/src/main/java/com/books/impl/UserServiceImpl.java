@@ -57,12 +57,26 @@ public class UserServiceImpl implements UserService {
 	public User AddBookToUser(Long bookId, String userId) throws UserNotFoundException {
 		// book id 2
 		// user ID b6fa44e7-fe4a-4008-a38e-ceabae623fc9
+//		Book book = this.bookService.getBookById(bookId);
+//		User user = getUserById(userId);
+//		List<Book> books = user.getBooks();
+//		book.getUsers().add(user);
+//		books.add(this.bookService.updateBook(book));
+//		user.setBooks(books);
+//		return updateUser(user);
+		
 		Book book = this.bookService.getBookById(bookId);
 		User user = getUserById(userId);
 		List<Book> books = user.getBooks();
-		book.setUserId(userId);
+
+		if (books.contains(book)) {
+			throw new UserNotFoundException("Book already exists in user's collection");
+		}
+
+		book.getUsers().add(user);
 		books.add(this.bookService.updateBook(book));
 		user.setBooks(books);
+
 		return updateUser(user);
 	}
 

@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.books.entities.Book;
 import com.books.service.BookService;
 
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/books")
 public class BookController {

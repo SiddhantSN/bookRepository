@@ -1,10 +1,17 @@
 package com.books.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,7 +49,8 @@ public class Book {
 	@Column(name = "publication")
 	public String publication;
 	
-	@Column(name="user_id")
-	public String userId;
+	@ManyToMany(mappedBy = "books", cascade = CascadeType.ALL)
+	@JsonIgnore
+	public List<User> users = new ArrayList<>();
 
 }

@@ -60,7 +60,7 @@ public class BookServiceImpl implements BookService {
 		currentBook.setIsbn(updatedBook.getIsbn());
 		currentBook.setPublication(updatedBook.getPublication());
 		currentBook.setYear(updatedBook.getYear());
-		currentBook.setUserId(updatedBook.getUserId());
+		currentBook.setUsers(updatedBook.getUsers());
 		
 		return this.bookRepository.save(currentBook);
 	}

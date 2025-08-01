@@ -46,7 +46,7 @@ public class UserController {
 		return ResponseEntity.ok(this.userService.updateUser(user));
 	}
 	
-	@PutMapping
+	@PutMapping("/addbook")
 	public ResponseEntity<User> addBookToUser(@RequestParam Long bookId, @RequestParam String userId) throws UserNotFoundException{
 		// book id 2
 		// user ID b6fa44e7-fe4a-4008-a38e-ceabae623fc9
