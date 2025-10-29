@@ -21,7 +21,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		
-		http.csrf(t->t.disable()).authorizeHttpRequests(t->t.requestMatchers("/books/**").permitAll()
+		http.csrf(t->t.disable()).authorizeHttpRequests(t->t.requestMatchers("/books/**").permitAll().requestMatchers("/actuator/health").permitAll()
 				.requestMatchers("/users/**").authenticated())
 		.httpBasic(Customizer.withDefaults());
 		
