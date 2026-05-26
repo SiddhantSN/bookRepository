@@ -65,7 +65,14 @@
 <dependency>
     <groupId>org.projectlombok</groupId>
     <artifactId>lombok</artifactId>
+	<version>1.18.30</version>
 </dependency>
+		<!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

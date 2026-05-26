@@ -3,15 +3,9 @@ package com.books.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.books.entities.Book;
 import com.books.service.BookService;
@@ -47,14 +41,14 @@ public class BookController {
 		return ResponseEntity.ok(newBook);
 	}
 	
-	@GetMapping("/author/{author}")
-	public ResponseEntity<List<Book>> getByAuthor(@PathVariable String author){
+	@GetMapping("/author")
+	public ResponseEntity<List<Book>> getByAuthor(@RequestParam(name = "author") String author){
 	    List<Book> books = bookService.getByAuthor(author);
 	    return ResponseEntity.ok(books);
 	}
 	
-	@GetMapping("/year/{year}")
-	public ResponseEntity<List<Book>> getByYear(@PathVariable int year){
+	@GetMapping("/year")
+	public ResponseEntity<List<Book>> getByYear(@RequestParam(name = "year") int year){
 	    List<Book> books = bookService.getByYear(year);
 	    return ResponseEntity.ok(books);
 	}
