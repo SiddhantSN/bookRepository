@@ -2,6 +2,7 @@ package com.books.controller;
 
 import java.util.List;
 
+import com.books.entities.OpenLibraryBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,12 @@ public class BookController {
 		System.out.println(id);
 		// handle if isbn not found, return not found status
 		return ResponseEntity.ok(book); 
+	}
+
+	@GetMapping("/isbn")
+	public ResponseEntity<OpenLibraryBook> getBookByIsbn(@RequestParam(name = "isbn") String isbn){
+		OpenLibraryBook openLibraryBook = this.bookService.getBookbyIsbn(isbn);
+		return ResponseEntity.ok(openLibraryBook);
 	}
 	
 	@PostMapping
