@@ -3,6 +3,7 @@ package com.books.service;
 import java.util.List;
 
 import com.books.entities.Book;
+import com.books.entities.BookDetails;
 import com.books.entities.OpenLibraryBook;
 
 public interface BookService {
@@ -17,7 +18,7 @@ public interface BookService {
 
 	List<Book> getByYear(int year);
 
-	OpenLibraryBook getBookbyIsbn(String isbn);
+	BookDetails getBookbyIsbn(String isbn);
 
 	Book updateBook(Book book);
 

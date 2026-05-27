@@ -1,9 +1,11 @@
 package com.books.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.books.entities.BookDetails;
 import com.books.entities.OpenLibraryBook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,24 +38,28 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public OpenLibraryBook getBookbyIsbn(String isbn){
+	public BookDetails getBookbyIsbn(String isbn) {
 		String uri = "/api/books?bibkeys=ISBN:{isbn}&format=json";
 		logger.info("Calling OpenLibrary REST API with URI: {} with ISBN: {}", uri, isbn);
 		Map<String, OpenLibraryBook> openLibraryBookMap = openLibraryRestClient.get()
 				.uri(uri, isbn)
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
-				.body(new ParameterizedTypeReference<Map<String, OpenLibraryBook>>() {});
+				.body(new ParameterizedTypeReference<Map<String, OpenLibraryBook>>() {
+				});
 		logger.info("Response received from OpenLibrary API. Map size: {}", openLibraryBookMap != null ? openLibraryBookMap.size() : 0);
-		if(openLibraryBookMap != null){
-			return openLibraryBookMap.get("ISBN:"+isbn);
+		if (openLibraryBookMap != null) {
+			OpenLibraryBook openLibraryBook = openLibraryBookMap.get("ISBN:" + isbn);
+			String infoUrl = openLibraryBook.getInfo_url();
+			String OLID = Arrays.stream(infoUrl.split("/")).filter(s -> s.startsWith("OL")).findFirst().get();
+			return openLibraryRestClient.get().uri("/books/{OLID}", OLID).accept(MediaType.APPLICATION_JSON).retrieve().body(BookDetails.class);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Book getBookById(Long id) {
-		
+
 		Optional<Book> bookFound  = this.bookRepository.findById(id);
 		return bookFound.get();
 	}
