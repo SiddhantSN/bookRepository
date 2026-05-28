@@ -38,8 +38,8 @@ public class BookController {
 	}
 
 	@GetMapping("/isbn")
-	public ResponseEntity<BookDetails> getBookByIsbn(@RequestParam(name = "isbn") String isbn){
-		BookDetails openLibraryBook = this.bookService.getBookbyIsbn(isbn);
+	public ResponseEntity<Book> getBookByIsbn(@RequestParam(name = "isbn") String isbn){
+		Book openLibraryBook = this.bookService.getBookbyIsbn(isbn);
 		return ResponseEntity.ok(openLibraryBook);
 	}
 	

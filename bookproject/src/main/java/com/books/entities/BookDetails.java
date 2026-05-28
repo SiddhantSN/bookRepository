@@ -2,22 +2,25 @@ package com.books.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
+import lombok.Getter;
+import lombok.Setter;
 import java.util.List;
 
+@Getter
+@Setter
 @Data
 public class BookDetails {
     @JsonProperty("title")
-    String bookTitle;
+    public String bookTitle;
 //    @JsonProperty()
 //    String bookAuthor;
     @JsonProperty("publish_date")
-    String year;
+    public String year;
     @JsonProperty("publishers")
-    List<String> publisher;
+    public List<String> publisher;
     @JsonProperty("isbn_13")
-    List<String> isbn;
+    public List<String> isbn;
     @JsonProperty("number_of_pages")
-    Integer numberOfPages;
+    public Integer numberOfPages;
 
 }

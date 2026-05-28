@@ -29,10 +29,13 @@ public class Book {
 
 	@Column(name = "isbn")
 	public String isbn;
-	
+
+	@Column(name = "isbn10")
+	public String isbn10;
+
 	@Column(name = "title")
 	public String title;
-	
+
 	@Column(name = "author")
 	public String author;
 
@@ -41,7 +44,10 @@ public class Book {
 
 	@Column(name = "publication")
 	public String publication;
-	
+
+	@Column(name = "number_of_pages")
+	public Integer numberOfPages;
+
 	@ManyToMany(mappedBy = "books", cascade = CascadeType.ALL)
 	@JsonIgnore
 	public List<User> users = new ArrayList<>();

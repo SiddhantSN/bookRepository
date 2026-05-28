@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 			throw new UserNotFoundException("Book already exists in user's collection");
 		}
 
-		book.getUsers().add(user);
+//		book.getUsers().add(user);
 		books.add(this.bookService.updateBook(book));
 		user.setBooks(books);
 

@@ -38,7 +38,14 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public BookDetails getBookbyIsbn(String isbn) {
+	public Book getBookbyIsbn(String isbn) {
+		logger.info("Searching for existing book with isbn10: {}", isbn);
+		Book existingBook = bookRepository.findByIsbn10(isbn);
+		if(existingBook != null) {
+			logger.info("Found existing book in database with isbn10: {}", isbn);
+			return existingBook;
+		}
+		logger.info("Book not found in database, fetching from OpenLibrary API with isbn: {}", isbn);
 		String uri = "/api/books?bibkeys=ISBN:{isbn}&format=json";
 		logger.info("Calling OpenLibrary REST API with URI: {} with ISBN: {}", uri, isbn);
 		Map<String, OpenLibraryBook> openLibraryBookMap = openLibraryRestClient.get()
@@ -51,10 +58,34 @@ public class BookServiceImpl implements BookService {
 		if (openLibraryBookMap != null) {
 			OpenLibraryBook openLibraryBook = openLibraryBookMap.get("ISBN:" + isbn);
 			String infoUrl = openLibraryBook.getInfo_url();
-			String OLID = Arrays.stream(infoUrl.split("/")).filter(s -> s.startsWith("OL")).findFirst().get();
-			return openLibraryRestClient.get().uri("/books/{OLID}", OLID).accept(MediaType.APPLICATION_JSON).retrieve().body(BookDetails.class);
+			String OLID = Arrays.stream(infoUrl.split("/")).filter(s -> s.startsWith("OL")).findFirst().orElse(null);
+			BookDetails bookDetails = openLibraryRestClient.get().uri("/books/{OLID}", OLID).accept(MediaType.APPLICATION_JSON).retrieve().body(BookDetails.class);
+			Book book = new Book();
+            assert bookDetails != null;
+			book.isbn10 = isbn;
+            book.isbn = bookDetails.getIsbn().get(0);
+			book.title = bookDetails.getBookTitle();
+			book.year = Integer.parseInt(bookDetails.getYear());
+			book.publication = bookDetails.getPublisher().get(0);
+			book.numberOfPages = bookDetails.getNumberOfPages()!=null?bookDetails.getNumberOfPages():0;
+			Book savedBook = bookRepository.save(book);
+			logger.info("Book saved to database with isbn10: {}", isbn);
+			return savedBook;
 		}
+		logger.warn("Book not found in OpenLibrary API with isbn: {}", isbn);
 		return null;
+	}
+
+	@Override
+	public Book getBookByIsbnDB(String isbn) {
+		logger.info("Searching database for book with isbn10: {}", isbn);
+		Book book = bookRepository.findByIsbn10(isbn);
+		if(book != null) {
+			logger.info("Found book in database with isbn10: {}", isbn);
+		} else {
+			logger.warn("No book found in database with isbn10: {}", isbn);
+		}
+		return book;
 	}
 
 	@Override
@@ -90,14 +121,14 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book updateBook(Book updatedBook) {
-		Book currentBook = getBookById(updatedBook.getId());
-		currentBook.setAuthor(updatedBook.getAuthor());
-		currentBook.setTitle(updatedBook.getTitle());
-		currentBook.setIsbn(updatedBook.getIsbn());
-		currentBook.setPublication(updatedBook.getPublication());
-		currentBook.setYear(updatedBook.getYear());
-		currentBook.setUsers(updatedBook.getUsers());
-		
+		Book currentBook = getBookById(updatedBook.id);
+		currentBook.author = updatedBook.author;
+		currentBook.title = updatedBook.title;
+		currentBook.isbn = updatedBook.isbn;
+		currentBook.publication = updatedBook.publication;
+		currentBook.year = updatedBook.year;
+		currentBook.users = updatedBook.users;
+
 		return this.bookRepository.save(currentBook);
 	}
 }
