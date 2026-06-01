@@ -42,44 +42,92 @@ public class BookServiceImpl implements BookService {
 	public Book getBookbyIsbn(String isbn) {
 		logger.info("Searching for existing book with isbn10: {}", isbn);
 		Book existingBook = bookRepository.findByIsbn10(isbn);
+
 		if(existingBook != null) {
 			logger.info("Found existing book in database with isbn10: {}", isbn);
 			return existingBook;
 		}
+
 		logger.info("Book not found in database, fetching from OpenLibrary API with isbn: {}", isbn);
+		return fetchAndSaveBookFromOpenLibrary(isbn);
+	}
+
+	private Book fetchAndSaveBookFromOpenLibrary(String isbn) {
+		Map<String, OpenLibraryBook> openLibraryBookMap = fetchOpenLibraryBookMap(isbn);
+
+		if (openLibraryBookMap == null || openLibraryBookMap.isEmpty()) {
+			logger.warn("Book not found in OpenLibrary API with isbn: {}", isbn);
+			return null;
+		}
+
+		BookDetails bookDetails = fetchBookDetails(isbn);
+		if (bookDetails == null) {
+			return null;
+		}
+
+		Author author = fetchAuthor(bookDetails);
+		Book book = mapToBookEntity(isbn, bookDetails, author);
+
+		Book savedBook = bookRepository.save(book);
+		logger.info("Book saved to database with isbn10: {}", isbn);
+		return savedBook;
+	}
+
+	private Map<String, OpenLibraryBook> fetchOpenLibraryBookMap(String isbn) {
 		String uri = "/api/books?bibkeys=ISBN:{isbn}&format=json";
 		logger.info("Calling OpenLibrary REST API with URI: {} with ISBN: {}", uri, isbn);
+
 		Map<String, OpenLibraryBook> openLibraryBookMap = openLibraryRestClient.get()
 				.uri(uri, isbn)
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
-				.body(new ParameterizedTypeReference<Map<String, OpenLibraryBook>>() {
-				});
-		logger.info("Response received from OpenLibrary API. Map size: {}", openLibraryBookMap != null ? openLibraryBookMap.size() : 0);
-		if (openLibraryBookMap != null) {
-			OpenLibraryBook openLibraryBook = openLibraryBookMap.get("ISBN:" + isbn);
-			String infoUrl = openLibraryBook.getInfo_url();
-			String OLID = Arrays.stream(infoUrl.split("/")).filter(s -> s.startsWith("OL")).findFirst().orElse(null);
-			BookDetails bookDetails = openLibraryRestClient.get().uri("/isbn/{isbn}", isbn).accept(MediaType.APPLICATION_JSON).retrieve().body(BookDetails.class);
-			Book book = new Book();
-            assert bookDetails != null;
-			book.isbn10 = isbn;
-			String authorResponse = bookDetails.getAuthors().get(0).getKey();
-			String author_OLID = Arrays.stream(authorResponse.split("/")).filter(s -> s.startsWith("OL")).findFirst().orElse(null);
-			Author author = openLibraryRestClient.get().uri("/authors/{author_OLID}", author_OLID).accept(MediaType.APPLICATION_JSON).retrieve().body(Author.class);
-            assert author != null;
-            book.author = author.getName()!=null?author.getName():"No Author Data";
-            book.isbn = bookDetails.getIsbn().get(0);
-			book.title = bookDetails.getBookTitle();
-			book.year = bookDetails.getYear();
-			book.publication = bookDetails.getPublisher().get(0);
-			book.numberOfPages = bookDetails.getNumberOfPages()!=null?bookDetails.getNumberOfPages():0;
-			Book savedBook = bookRepository.save(book);
-			logger.info("Book saved to database with isbn10: {}", isbn);
-			return savedBook;
+				.body(new ParameterizedTypeReference<Map<String, OpenLibraryBook>>() {});
+
+		logger.info("Response received from OpenLibrary API. Map size: {}",
+			openLibraryBookMap != null ? openLibraryBookMap.size() : 0);
+
+		return openLibraryBookMap;
+	}
+
+	private BookDetails fetchBookDetails(String isbn) {
+		return openLibraryRestClient.get()
+				.uri("/isbn/{isbn}", isbn)
+				.accept(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.body(BookDetails.class);
+	}
+
+	private Author fetchAuthor(BookDetails bookDetails) {
+		if(bookDetails.getAuthors() == null){
+			return null;
 		}
-		logger.warn("Book not found in OpenLibrary API with isbn: {}", isbn);
-		return null;
+		String authorResponse = bookDetails.getAuthors().get(0).getKey();
+		String author_OLID = extractOLID(authorResponse);
+
+		return openLibraryRestClient.get()
+				.uri("/authors/{author_OLID}", author_OLID)
+				.accept(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.body(Author.class);
+	}
+
+	private String extractOLID(String url) {
+		return Arrays.stream(url.split("/"))
+				.filter(s -> s.startsWith("OL"))
+				.findFirst()
+				.orElse(null);
+	}
+
+	private Book mapToBookEntity(String isbn, BookDetails bookDetails, Author author) {
+		Book book = new Book();
+		book.isbn10 = isbn;
+		book.author = author != null && author.getName() != null ? author.getName() : "No Author Data";
+		book.isbn = bookDetails.getIsbn().get(0);
+		book.title = bookDetails.getBookTitle();
+		book.year = bookDetails.getYear();
+		book.publication = bookDetails.getPublisher().get(0);
+		book.numberOfPages = bookDetails.getNumberOfPages() != null ? bookDetails.getNumberOfPages() : 0;
+		return book;
 	}
 
 	@Override
