@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.books.entities.Author;
 import com.books.entities.BookDetails;
 import com.books.entities.OpenLibraryBook;
 import org.slf4j.Logger;
@@ -59,13 +60,18 @@ public class BookServiceImpl implements BookService {
 			OpenLibraryBook openLibraryBook = openLibraryBookMap.get("ISBN:" + isbn);
 			String infoUrl = openLibraryBook.getInfo_url();
 			String OLID = Arrays.stream(infoUrl.split("/")).filter(s -> s.startsWith("OL")).findFirst().orElse(null);
-			BookDetails bookDetails = openLibraryRestClient.get().uri("/books/{OLID}", OLID).accept(MediaType.APPLICATION_JSON).retrieve().body(BookDetails.class);
+			BookDetails bookDetails = openLibraryRestClient.get().uri("/isbn/{isbn}", isbn).accept(MediaType.APPLICATION_JSON).retrieve().body(BookDetails.class);
 			Book book = new Book();
             assert bookDetails != null;
 			book.isbn10 = isbn;
+			String authorResponse = bookDetails.getAuthors().get(0).getKey();
+			String author_OLID = Arrays.stream(authorResponse.split("/")).filter(s -> s.startsWith("OL")).findFirst().orElse(null);
+			Author author = openLibraryRestClient.get().uri("/authors/{author_OLID}", author_OLID).accept(MediaType.APPLICATION_JSON).retrieve().body(Author.class);
+            assert author != null;
+            book.author = author.getName()!=null?author.getName():"No Author Data";
             book.isbn = bookDetails.getIsbn().get(0);
 			book.title = bookDetails.getBookTitle();
-			book.year = Integer.parseInt(bookDetails.getYear());
+			book.year = bookDetails.getYear();
 			book.publication = bookDetails.getPublisher().get(0);
 			book.numberOfPages = bookDetails.getNumberOfPages()!=null?bookDetails.getNumberOfPages():0;
 			Book savedBook = bookRepository.save(book);

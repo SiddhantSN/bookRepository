@@ -40,7 +40,7 @@ public class Book {
 	public String author;
 
 	@Column(name = "year")
-	public int year;
+	public String year;
 
 	@Column(name = "publication")
 	public String publication;

@@ -14,6 +14,9 @@ public class BookDetails {
     public String bookTitle;
 //    @JsonProperty()
 //    String bookAuthor;
+
+    @JsonProperty("authors")
+    public List<Author> authors;
     @JsonProperty("publish_date")
     public String year;
     @JsonProperty("publishers")
