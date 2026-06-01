@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.books.entities.Author;
-import com.books.entities.BookDetails;
-import com.books.entities.OpenLibraryBook;
+import com.books.dao.AuthorRepository;
+import com.books.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.books.dao.BookRepository;
-import com.books.entities.Book;
 import com.books.service.BookService;
 import org.springframework.web.client.RestClient;
 
@@ -28,6 +26,9 @@ public class BookServiceImpl implements BookService {
 
 	@Autowired
 	BookRepository bookRepository;
+
+	@Autowired
+	AuthorRepository authorRepository;
 
 	@Autowired
 	@Qualifier("openLibraryRestClient")
@@ -66,6 +67,12 @@ public class BookServiceImpl implements BookService {
 		}
 
 		Author author = fetchAuthor(bookDetails);
+		if (author != null) {
+			AuthorDetails authorDetails = new AuthorDetails();
+			authorDetails.setName(author.getName());
+			authorDetails.setBirth_date(author.getBirth_date());
+			authorRepository.save(authorDetails);
+		}
 		Book book = mapToBookEntity(isbn, bookDetails, author);
 
 		Book savedBook = bookRepository.save(book);
@@ -103,7 +110,7 @@ public class BookServiceImpl implements BookService {
 		}
 		String authorResponse = bookDetails.getAuthors().get(0).getKey();
 		String author_OLID = extractOLID(authorResponse);
-
+		logger.info("Fetching Author from OpenLibrary - Author OLID: {}", author_OLID);
 		return openLibraryRestClient.get()
 				.uri("/authors/{author_OLID}", author_OLID)
 				.accept(MediaType.APPLICATION_JSON)
