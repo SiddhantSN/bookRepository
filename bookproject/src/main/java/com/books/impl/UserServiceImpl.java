@@ -16,13 +16,13 @@ import com.books.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-	
+
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	BookService bookService;
-	
+
 	@Override
 	public User createUser(User user) {
 		user.setId(UUID.randomUUID().toString());
@@ -35,11 +35,11 @@ public class UserServiceImpl implements UserService {
 		List<User> allUsers = this.userRepository.findAll();
 		return allUsers;
 	}
-	
+
 	@Cacheable(cacheNames = "cache1")
 	@Override
 	public User getUserById(String id) throws UserNotFoundException {
-		User user = this.userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(""));
+		User user = this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(""));
 		return user;
 	}
 
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 //		books.add(this.bookService.updateBook(book));
 //		user.setBooks(books);
 //		return updateUser(user);
-		
+
 		Book book = this.bookService.getBookById(bookId);
 		User user = getUserById(userId);
 		List<Book> books = user.getBooks();
@@ -77,6 +77,14 @@ public class UserServiceImpl implements UserService {
 		books.add(this.bookService.updateBook(book));
 		user.setBooks(books);
 
+		return updateUser(user);
+	}
+
+	@Override
+	public User deleteBookFromUser(Long bookId, String userId) throws UserNotFoundException {
+		Book bookToDelete = this.bookService.getBookById(bookId);
+		User user = getUserById(userId);
+		user.getBooks().remove(bookToDelete);
 		return updateUser(user);
 	}
 

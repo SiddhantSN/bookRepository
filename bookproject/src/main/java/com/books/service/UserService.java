@@ -16,5 +16,7 @@ public interface UserService {
 	User updateUser(User updatedUser) throws UserNotFoundException;
 	
 	User AddBookToUser(Long bookId, String userId) throws UserNotFoundException;
+
+	User deleteBookFromUser(Long bookId, String userId) throws UserNotFoundException;
 	
 }

@@ -46,11 +46,12 @@ public class UserController {
 		return ResponseEntity.ok(this.userService.updateUser(user));
 	}
 	
-	@PutMapping("/addbook")
+	@PutMapping("/add-book")
 	public ResponseEntity<User> addBookToUser(@RequestParam Long bookId, @RequestParam String userId) throws UserNotFoundException{
-		// book id 2
-		// user ID b6fa44e7-fe4a-4008-a38e-ceabae623fc9
-		
 		return ResponseEntity.ok(this.userService.AddBookToUser(bookId, userId));
+	}
+	@PutMapping("/delete-book")
+	public ResponseEntity<User> deleteBookFromUser(@RequestParam Long bookId, @RequestParam String userId) throws UserNotFoundException{
+		return ResponseEntity.ok(this.userService.deleteBookFromUser(bookId, userId));
 	}
 }
